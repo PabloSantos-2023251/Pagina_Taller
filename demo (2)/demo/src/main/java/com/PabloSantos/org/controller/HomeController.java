@@ -26,6 +26,11 @@ public class HomeController {
         return "Detalles";
     }
 
+    @GetMapping("/ventas")
+    public String irVentas() {
+        return "Ventas";
+    }
+
     @GetMapping("/logout")
     public String Logout() {
         return "redirect:/auth";

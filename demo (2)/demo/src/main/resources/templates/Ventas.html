@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Ventas - MiSistema</title>
+    <link rel="stylesheet" th:href="@{/css/clientes.css}" href="../static/css/clientes.css">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">MiSistema v1.0</div>
+    <div class="user-info">
+        <span>Bienvenido, <strong>Administrador</strong></span>
+        <a th:href="@{/home}" class="btn-logout">Volver</a>
+    </div>
+</header>
+
+<main class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h1>Historial de Ventas</h1>
+            <p style="color: #666; margin-top: -10px;">Registro general de transacciones realizadas.</p>
+        </div>
+        <button class="btn-nuevo" type="button" style="background-color: #007bff;">+ Nueva Venta</button>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>No. Venta</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Vendedor</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th style="text-align: center;">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>#1001</td>
+                <td>2026-04-08</td>
+                <td>Juan Alberto Pérez</td>
+                <td>admin_pablo</td>
+                <td><strong>Q 42.25</strong></td>
+                <td><span class="status-pill status-active">Completada</span></td>
+                <td style="text-align: center;">
+                    <span title="Ver Detalles" style="cursor:pointer; margin: 0 5px;">📄</span>
+                    <span title="Anular" style="cursor:pointer; margin: 0 5px;">🚫</span>
+                </td>
+            </tr>
+            <tr>
+                <td>#1002</td>
+                <td>2026-04-07</td>
+                <td>María Mercedes López</td>
+                <td>vendedor_ana</td>
+                <td><strong>Q 120.00</strong></td>
+                <td><span class="status-pill status-inactive">Anulada</span></td>
+                <td style="text-align: center;">
+                    <span title="Ver Detalles" style="cursor:pointer; margin: 0 5px;">📄</span>
+                    <span title="Anular" style="cursor:pointer; margin: 0 5px;">🚫</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>
