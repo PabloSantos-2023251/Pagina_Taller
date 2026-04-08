@@ -21,6 +21,11 @@ public class HomeController {
         return "productos";
     }
 
+    @GetMapping("/detalles")
+    public String irAdetalles() {
+        return "Detalles";
+    }
+
     @GetMapping("/logout")
     public String Logout() {
         return "redirect:/auth";

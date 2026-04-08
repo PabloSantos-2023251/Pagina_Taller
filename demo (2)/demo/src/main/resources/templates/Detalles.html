@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles de Venta - MiSistema</title>
+    <link rel="stylesheet" th:href="@{/css/clientes.css}" href="../static/css/clientes.css">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">MiSistema v1.0</div>
+    <div class="user-info">
+        <span>Bienvenido, <strong>Administrador</strong></span>
+        <a th:href="@{/home}" class="btn-logout">Volver</a>
+    </div>
+</header>
+
+<main class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h1>Desglose de Ventas</h1>
+            <p style="color: #666; margin-top: -10px;">Artículos vendidos por transacción.</p>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>ID Detalle</th>
+                <th>ID Venta</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unit.</th>
+                <th>Subtotal</th>
+                <th style="text-align: center;">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>8001</td>
+                <td>#1001</td>
+                <td><strong>Coca-Cola 1.5L</strong></td>
+                <td>2</td>
+                <td>Q 12.50</td>
+                <td><strong>Q 25.00</strong></td>
+                <td style="text-align: center;">
+                    <span style="cursor:pointer; margin: 0 5px;">👁️</span>
+                    <span style="cursor:pointer; margin: 0 5px;">🗑️</span>
+                </td>
+            </tr>
+            <tr>
+                <td>8002</td>
+                <td>#1001</td>
+                <td><strong>Arroz Blanco 1lb</strong></td>
+                <td>3</td>
+                <td>Q 5.75</td>
+                <td><strong>Q 17.25</strong></td>
+                <td style="text-align: center;">
+                    <span style="cursor:pointer; margin: 0 5px;">👁️</span>
+                    <span style="cursor:pointer; margin: 0 5px;">🗑️</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>

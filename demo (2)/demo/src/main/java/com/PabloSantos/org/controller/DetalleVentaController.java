@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/detalles")
+@RequestMapping("/api/detalles")
 public class DetalleVentaController {
     private final DetalleVentaService detalleVentaService;
     public DetalleVentaController(DetalleVentaService service) { this.detalleVentaService = service; }
