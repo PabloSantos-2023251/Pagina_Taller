@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Usuarios - MiSistema</title>
+    <title>Inventario de Productos - MiSistema</title>
     <link rel="stylesheet" th:href="@{/css/clientes.css}" href="../static/css/clientes.css">
 </head>
 <body>
@@ -17,8 +17,8 @@
 
 <main class="container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1>Listado de Usuarios</h1>
-        <button class="btn-nuevo" type="button">+ Nuevo Usuario</button>
+        <h1>Control de Inventario</h1>
+        <button class="btn-nuevo" type="button">+ Nuevo Producto</button>
     </div>
 
     <div class="table-container">
@@ -26,31 +26,31 @@
             <thead>
             <tr>
                 <th>Código</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Rol</th>
+                <th>Nombre del Producto</th>
+                <th>Precio (Q)</th>
+                <th>Stock</th>
                 <th>Estado</th>
                 <th style="text-align: center;">Acciones</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>101</td>
-                <td><strong>admin_pablo</strong></td>
-                <td>pablo@sistema.com</td>
-                <td>ADMIN</td>
-                <td><span class="status-pill status-active">Activo</span></td>
+                <td>501</td>
+                <td><strong>Coca-Cola 1.5L</strong></td>
+                <td>12.50</td>
+                <td>45 unidades</td>
+                <td><span class="status-pill status-active">Disponible</span></td>
                 <td style="text-align: center;">
                     <span style="cursor:pointer; margin: 0 5px;">✏️</span>
                     <span style="cursor:pointer; margin: 0 5px;">🗑️</span>
                 </td>
             </tr>
             <tr>
-                <td>102</td>
-                <td><strong>vendedor_ana</strong></td>
-                <td>ana@sistema.com</td>
-                <td>USER</td>
-                <td><span class="status-pill status-inactive">Inactivo</span></td>
+                <td>502</td>
+                <td><strong>Arroz Blanco 1lb</strong></td>
+                <td>5.75</td>
+                <td>0 unidades</td>
+                <td><span class="status-pill status-inactive">Agotado</span></td>
                 <td style="text-align: center;">
                     <span style="cursor:pointer; margin: 0 5px;">✏️</span>
                     <span style="cursor:pointer; margin: 0 5px;">🗑️</span>
