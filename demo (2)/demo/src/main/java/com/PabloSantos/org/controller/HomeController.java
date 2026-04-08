@@ -11,4 +11,9 @@ public class HomeController {
         return "Cliente";
     }
 
+    @GetMapping("/logout")
+    public String Logout() {
+        return "redirect:/auth";
+    }
+
 }
