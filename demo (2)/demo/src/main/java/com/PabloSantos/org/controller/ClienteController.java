@@ -2,13 +2,12 @@ package com.PabloSantos.org.controller;
 
 import com.PabloSantos.org.entity.Cliente;
 import com.PabloSantos.org.service.ClienteService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ClienteController {
@@ -20,57 +19,39 @@ public class ClienteController {
     }
 
     @GetMapping("/clientes")
-    public String irAClientes(Model model) {
-        model.addAttribute("clientes", clienteService.getAllClientes());
+    public String listar(@RequestParam(required = false) String buscar, Model model) {
+        List<Cliente> clientes = clienteService.getAllClientes();
+
+        if (buscar != null && !buscar.isEmpty()) {
+            clientes = clientes.stream()
+                    .filter(c -> c.getNombre_cliente().toLowerCase().contains(buscar.toLowerCase()) ||
+                            c.getDpiCliente().toString().contains(buscar))
+                    .collect(Collectors.toList());
+        }
+
+        model.addAttribute("clientes", clientes);
+        model.addAttribute("clienteObj", new Cliente());
         return "Cliente";
     }
 
-    @GetMapping("/api/clientes")
-    @ResponseBody
-    public List<Cliente> getAllClientes() {
-        return clienteService.getAllClientes();
+    @PostMapping("/clientes/guardar")
+    public String guardar(@ModelAttribute Cliente cliente) {
+        clienteService.saveCliente(cliente);
+        return "redirect:/clientes";
     }
 
-    @GetMapping("/api/clientes/{id}")
-    @ResponseBody
-    public ResponseEntity<Object> getClienteById(@PathVariable Integer id) {
-        try {
-            return ResponseEntity.ok(clienteService.getClienteById(id));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/clientes/editar/{id}")
+    public String precargarEdicion(@PathVariable Integer id, Model model) {
+        model.addAttribute("clientes", clienteService.getAllClientes());
+        model.addAttribute("clienteObj", clienteService.getClienteById(id));
+        model.addAttribute("editando", true);
+        return "Cliente";
     }
 
-    @PostMapping("/api/clientes")
-    @ResponseBody
-    public ResponseEntity<Object> saveCliente(@RequestBody Cliente cliente) {
-        try {
-            return new ResponseEntity<>(clienteService.saveCliente(cliente), HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        }
-    }
-
-    @PutMapping("/api/clientes/{id}")
-    @ResponseBody
-    public ResponseEntity<Object> updateCliente(@PathVariable Integer id, @RequestBody Cliente cliente) {
-        try {
-            clienteService.updateCliente(id, cliente);
-            return ResponseEntity.ok("Actualizado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/api/clientes/{id}")
-    @ResponseBody
-    public ResponseEntity<Object> deleteCliente(@PathVariable Integer id) {
-        try {
-            clienteService.deleteCliente(id);
-            return ResponseEntity.ok("Eliminado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/clientes/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id) {
+        clienteService.deleteCliente(id);
+        return "redirect:/clientes";
     }
 
     @GetMapping("/home")
