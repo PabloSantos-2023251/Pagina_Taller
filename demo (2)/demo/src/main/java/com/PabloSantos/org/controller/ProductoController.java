@@ -1,41 +1,55 @@
 package com.PabloSantos.org.controller;
+
 import com.PabloSantos.org.entity.Producto;
 import com.PabloSantos.org.service.ProductoService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/productos")
+@Controller
+@RequestMapping("/productos")
 public class ProductoController {
+
     private final ProductoService productoService;
     public ProductoController(ProductoService service) { this.productoService = service; }
 
     @GetMapping
-    public List<Producto> getAllProductos() { return productoService.getAllProductos(); }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getProductoById(@PathVariable Integer id) {
-        try { return ResponseEntity.ok(productoService.getProductoById(id)); }
-        catch (RuntimeException e) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); }
+    public String listar(@RequestParam(required = false) String buscar, Model model) {
+        List<Producto> productos = productoService.getAllProductos();
+        if (buscar != null && !buscar.isEmpty()) {
+            productos = productos.stream()
+                    .filter(p -> p.getNombre_producto().toLowerCase().contains(buscar.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        model.addAttribute("productos", productos);
+        model.addAttribute("productoObj", new Producto());
+        return "productos";
     }
 
-    @PostMapping
-    public ResponseEntity<Object> saveProducto(@RequestBody Producto producto) {
-        try { return new ResponseEntity<>(productoService.saveProducto(producto), HttpStatus.CREATED); }
-        catch (Exception e) { return ResponseEntity.badRequest().body("Error"); }
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute Producto producto) {
+        productoService.saveProducto(producto);
+        return "redirect:/productos";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateProducto(@PathVariable Integer id, @RequestBody Producto producto) {
-        try { productoService.updateProducto(id, producto); return ResponseEntity.ok("Actualizado"); }
-        catch (RuntimeException e) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); }
+    @GetMapping("/editar/{id}")
+    public String precargar(@PathVariable Integer id, Model model) {
+        model.addAttribute("productos", productoService.getAllProductos());
+        model.addAttribute("productoObj", productoService.getProductoById(id));
+        model.addAttribute("editando", true);
+        return "productos";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteProducto(@PathVariable Integer id) {
-        try { productoService.deleteProducto(id); return ResponseEntity.ok("Eliminado"); }
-        catch (RuntimeException e) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); }
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id, RedirectAttributes ra) {
+        try {
+            productoService.deleteProducto(id);
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensajeError", "No se puede eliminar: El producto tiene ventas asociadas.");
+        }
+        return "redirect:/productos";
     }
 }

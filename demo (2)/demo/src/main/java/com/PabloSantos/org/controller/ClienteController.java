@@ -5,6 +5,7 @@ import com.PabloSantos.org.service.ClienteService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,25 +50,17 @@ public class ClienteController {
     }
 
     @GetMapping("/clientes/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        clienteService.deleteCliente(id);
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
+        try {
+            clienteService.deleteCliente(id);
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "No se puede eliminar: El cliente tiene historial de ventas.");
+        }
         return "redirect:/clientes";
     }
 
     @GetMapping("/home")
     public String irAHome() { return "Home"; }
-
-    @GetMapping("/usuarios")
-    public String irAUsuarios() { return "Usuario"; }
-
-    @GetMapping("/productos")
-    public String irAproducto() { return "productos"; }
-
-    @GetMapping("/detalles")
-    public String irAdetalles() { return "Detalles"; }
-
-    @GetMapping("/ventas")
-    public String irVentas() { return "Ventas"; }
 
     @GetMapping("/logout")
     public String Logout() { return "redirect:/"; }

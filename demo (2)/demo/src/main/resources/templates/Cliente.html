@@ -2,74 +2,115 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Clientes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión | Clientes</title>
     <link rel="stylesheet" th:href="@{/css/clientes.css}">
 </head>
 <body>
 
-<header class="navbar">
-    <div class="logo">MiSistema v1.0</div>
-    <div class="user-info">
-        <a th:href="@{/home}" class="btn-logout">Volver</a>
+<nav class="top-nav">
+    <div class="nav-brand">TIENDA<span>PRO</span></div>
+    <div class="nav-menu">
+        <a th:href="@{/home}">Inicio</a>
     </div>
-</header>
+</nav>
 
-<main class="container">
+<main class="main-content">
 
-    <div style="background: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;">
-        <h2 th:text="${editando} ? 'Modificar Cliente' : 'Registrar Nuevo Cliente'"></h2>
-        <form th:action="@{/clientes/guardar}" th:object="${clienteObj}" method="post">
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <input type="number" th:field="*{dpiCliente}" placeholder="DPI" required th:readonly="${editando}">
-                <input type="text" th:field="*{nombre_cliente}" placeholder="Nombre" required>
-                <input type="text" th:field="*{apellido_cliente}" placeholder="Apellido" required>
-                <input type="text" th:field="*{direccion}" placeholder="Dirección">
-                <select th:field="*{estado}">
-                    <option value="1">Activo</option>
-                    <option value="0">Inactivo</option>
-                </select>
-                <button type="submit" class="btn-nuevo" style="background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer;">Aceptar</button>
-                <a th:if="${editando}" th:href="@{/clientes}" style="color: red; text-decoration: none; align-self: center;">Cancelar</a>
+    <div th:if="${mensajeError}" class="toast-error">
+        <div class="toast-body">
+            <strong>Error de Sistema:</strong> <span th:text="${mensajeError}"></span>
+        </div>
+        <a th:href="@{/clientes}" class="toast-close">&times;</a>
+    </div>
+
+    <div class="dashboard-grid">
+
+        <section class="glass-card form-section">
+            <header class="section-header">
+                <h2 th:text="${editando} ? 'Actualizar Cliente' : 'Nuevo Cliente'"></h2>
+                <p>Complete los datos para la gestión del registro.</p>
+            </header>
+
+            <form th:action="@{/clientes/guardar}" th:object="${clienteObj}" method="post" class="stack-form">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>DPI del Cliente</label>
+                        <input type="number" th:field="*{dpiCliente}" th:readonly="${editando}" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Estado</label>
+                        <select th:field="*{estado}">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Nombre(s)</label>
+                        <input type="text" th:field="*{nombre_cliente}" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Apellido(s)</label>
+                        <input type="text" th:field="*{apellido_cliente}" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Dirección Completa</label>
+                    <input type="text" th:field="*{direccion}">
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn-save" th:text="${editando} ? 'Guardar Cambios' : 'Registrar Cliente'"></button>
+                    <a th:if="${editando}" th:href="@{/clientes}" class="btn-cancel">Cancelar</a>
+                </div>
+            </form>
+        </section>
+
+        <section class="glass-card table-section">
+            <div class="table-header">
+                <h3>Registros Existentes</h3>
+                <form th:action="@{/clientes}" method="get" class="mini-search">
+                    <input type="text" name="buscar" placeholder="🔍 Filtrar por nombre...">
+                </form>
             </div>
-        </form>
-    </div>
 
-    <div style="margin-bottom: 20px;">
-        <form th:action="@{/clientes}" method="get" style="display: flex; gap: 10px;">
-            <input type="text" name="buscar" placeholder="Buscar por nombre o DPI..." style="flex-grow: 1; padding: 8px;">
-            <button type="submit">Buscar</button>
-            <a th:href="@{/clientes}" style="padding-top: 8px;">Limpiar</a>
-        </form>
-    </div>
-
-    <div class="table-container">
-        <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
-            <thead style="background: #333; color: white;">
-            <tr>
-                <th>DPI</th>
-                <th>Nombre Completo</th>
-                <th>Dirección</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="c : ${clientes}">
-                <td th:text="${c.dpiCliente}"></td>
-                <td th:text="${c.nombre_cliente + ' ' + c.apellido_cliente}"></td>
-                <td th:text="${c.direccion}"></td>
-                <td>
-                    <span th:text="${c.estado == 1 ? 'Activo' : 'Inactivo'}"
-                          th:style="${c.estado == 1 ? 'color: green; font-weight: bold;' : 'color: red;'}"></span>
-                </td>
-                <td>
-                    <a th:href="@{/clientes/editar/{id}(id=${c.dpiCliente})}" style="text-decoration: none; margin-right: 10px;">✏️ Editar</a>
-                    <a th:href="@{/clientes/eliminar/{id}(id=${c.dpiCliente})}"
-                       onclick="return confirm('¿Desea eliminar este registro?')" style="text-decoration: none; color: red;">🗑️ Eliminar</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>DPI</th>
+                        <th>Cliente</th>
+                        <th>Estado</th>
+                        <th class="text-right">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c : ${clientes}">
+                        <td class="col-id" th:text="${c.dpiCliente}"></td>
+                        <td>
+                            <div class="client-info">
+                                <span class="full-name" th:text="${c.nombre_cliente + ' ' + c.apellido_cliente}"></span>
+                                <span class="sub-text" th:text="${c.direccion}"></span>
+                            </div>
+                        </td>
+                        <td>
+                                <span th:class="${c.estado == 1 ? 'badge-ok' : 'badge-no'}"
+                                      th:text="${c.estado == 1 ? 'Activo' : 'Inactivo'}"></span>
+                        </td>
+                        <td class="text-right actions-cell">
+                            <a th:href="@{/clientes/editar/{id}(id=${c.dpiCliente})}" class="btn-icon edit">✏️</a>
+                            <a th:href="@{/clientes/eliminar/{id}(id=${c.dpiCliente})}"
+                               class="btn-icon delete" onclick="return confirm('¿Eliminar registro?')">🗑️</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
 </main>
 </body>
