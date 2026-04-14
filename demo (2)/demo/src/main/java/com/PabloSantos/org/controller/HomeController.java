@@ -33,7 +33,7 @@ public class HomeController {
 
     @GetMapping("/logout")
     public String Logout() {
-        return "redirect:/auth";
+        return "redirect:/";
     }
 
 }
