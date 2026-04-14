@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Clientes - MiSistema</title>
-    <link rel="stylesheet" th:href="@{/css/clientes.css}" href="../static/css/clientes.css">
+    <link rel="stylesheet" th:href="@{/css/clientes.css}">
 </head>
 <body>
 
@@ -33,31 +33,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>10102030</td>
-                <td>Juan Alberto Pérez</td>
-                <td>Calle Real #45, Zona 1</td>
-                <td><span class="status-pill status-active">Activo</span></td>
-                <td style="text-align: center;">
-                    <span style="cursor:pointer; margin: 0 5px;">✏️</span>
-                    <span style="cursor:pointer; margin: 0 5px;">🗑️</span>
+            <tr th:each="cliente : ${clientes}">
+                <td th:text="${cliente.dpiCliente}"></td>
+                <td th:text="${cliente.nombre_cliente + ' ' + cliente.apellido_cliente}"></td>
+                <td th:text="${cliente.direccion}"></td>
+                <td>
+                    <span th:if="${cliente.estado == 1}" class="status-pill status-active">Activo</span>
+                    <span th:unless="${cliente.estado == 1}" class="status-pill status-inactive">Inactivo</span>
                 </td>
-            </tr>
-            <tr>
-                <td>40506070</td>
-                <td>María Mercedes López</td>
-                <td>Av. Las Américas 12-30</td>
-                <td><span class="status-pill status-inactive">Inactivo</span></td>
-                <td style="text-align: center;">
-                    <span style="cursor:pointer; margin: 0 5px;">✏️</span>
-                    <span style="cursor:pointer; margin: 0 5px;">🗑️</span>
-                </td>
-            </tr>
-            <tr>
-                <td>80901020</td>
-                <td>Carlos Manuel Gómez</td>
-                <td>Residenciales El Frutal, Lote 5</td>
-                <td><span class="status-pill status-active">Activo</span></td>
                 <td style="text-align: center;">
                     <span style="cursor:pointer; margin: 0 5px;">✏️</span>
                     <span style="cursor:pointer; margin: 0 5px;">🗑️</span>
@@ -67,6 +50,5 @@
         </table>
     </div>
 </main>
-
 </body>
 </html>
