@@ -8,12 +8,18 @@
 </head>
 <body>
 
-<nav class="top-nav">
-    <div class="nav-brand">TIENDA<span>PRO</span></div>
-    <div class="nav-menu">
-        <a th:href="@{/home}">Inicio</a>
+<header class="navbar">
+    <div class="nav-left">
+        <div class="profile-container">
+            <img th:src="${session.rol == 'Administrador' ? '/img/admin-avatar.png' : '/img/user-avatar.png'}"
+                 alt="Perfil" class="profile-pic">
+        </div>
+        <div class="logo">TIENDA<span>PRO</span></div>
     </div>
-</nav>
+
+    <a th:href="@{/home}">Inicio</a>
+
+</header>
 
 <main class="main-content">
 

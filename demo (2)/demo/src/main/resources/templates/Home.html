@@ -8,7 +8,13 @@
 <body>
 
 <header class="navbar">
-    <div class="logo">TIENDA<span>PRO</span></div>
+    <div class="nav-left">
+        <div class="profile-container">
+            <img th:src="${session.rol == 'Administrador' ? '/img/admin-avatar.png' : '/img/user-avatar.png'}"
+                 alt="Perfil" class="profile-pic">
+        </div>
+        <div class="logo">TIENDA<span>PRO</span></div>
+    </div>
     <div class="user-info">
         Bienvenido, <b th:text="${session.usuarioLogueado}">Usuario</b>
         (<span th:text="${session.rol}">Rol</span>)
