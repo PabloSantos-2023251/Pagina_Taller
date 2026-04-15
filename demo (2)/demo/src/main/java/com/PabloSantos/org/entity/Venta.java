@@ -1,4 +1,5 @@
 package com.PabloSantos.org.entity;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -6,15 +7,28 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "Ventas")
 public class Venta {
-    @Id @Column(name = "codigo_venta") private Integer codigoVenta;
+
+    @Id
+    @Column(name = "codigo_venta")
+    private Integer codigoVenta;
+
+    @Column(name = "fecha_venta")
     private LocalDate fecha_venta;
+
+    @Column(name = "total")
     private BigDecimal total;
+
+    @Column(name = "estado")
     private Integer estado;
 
-    @ManyToOne @JoinColumn(name = "Clientes_dpi_cliente") private Cliente cliente;
-    @ManyToOne @JoinColumn(name = "Usuarios_codigo_usuario") private Usuario usuario;
+    @ManyToOne
+    @JoinColumn(name = "Clientes_dpi_cliente")
+    private Cliente cliente;
 
-    // Getters y Setters
+    @ManyToOne
+    @JoinColumn(name = "Usuarios_codigo_usuario")
+    private Usuario usuario;
+
     public Integer getCodigoVenta() { return codigoVenta; }
     public void setCodigoVenta(Integer codigoVenta) { this.codigoVenta = codigoVenta; }
     public LocalDate getFecha_venta() { return fecha_venta; }

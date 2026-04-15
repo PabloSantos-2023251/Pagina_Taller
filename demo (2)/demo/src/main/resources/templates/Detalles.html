@@ -2,69 +2,118 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Detalles de Venta - MiSistema</title>
-    <link rel="stylesheet" th:href="@{/css/clientes.css}" href="../static/css/clientes.css">
+    <title>Detalles de Venta | TIENDAPRO</title>
+    <link rel="stylesheet" th:href="@{/css/clientes.css}">
 </head>
 <body>
 
-<header class="navbar">
-    <div class="logo">MiSistema v1.0</div>
-    <div class="user-info">
-        <span>Bienvenido, <strong>Administrador</strong></span>
-        <a th:href="@{/home}" class="btn-logout">Volver</a>
+<nav class="top-nav">
+    <div class="nav-brand">TIENDA<span>PRO</span></div>
+    <div class="nav-menu">
+        <a th:href="@{/home}">Inicio</a>
     </div>
-</header>
+</nav>
 
-<main class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <div>
-            <h1>Desglose de Ventas</h1>
-            <p style="color: #666; margin-top: -10px;">Artículos vendidos por transacción.</p>
-        </div>
-    </div>
+<main class="main-content">
+    <div class="dashboard-grid">
 
-    <div class="table-container">
-        <table>
-            <thead>
-            <tr>
-                <th>ID Detalle</th>
-                <th>ID Venta</th>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio Unit.</th>
-                <th>Subtotal</th>
-                <th style="text-align: center;">Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>8001</td>
-                <td>#1001</td>
-                <td><strong>Coca-Cola 1.5L</strong></td>
-                <td>2</td>
-                <td>Q 12.50</td>
-                <td><strong>Q 25.00</strong></td>
-                <td style="text-align: center;">
-                    <span style="cursor:pointer; margin: 0 5px;">👁️</span>
-                    <span style="cursor:pointer; margin: 0 5px;">🗑️</span>
-                </td>
-            </tr>
-            <tr>
-                <td>8002</td>
-                <td>#1001</td>
-                <td><strong>Arroz Blanco 1lb</strong></td>
-                <td>3</td>
-                <td>Q 5.75</td>
-                <td><strong>Q 17.25</strong></td>
-                <td style="text-align: center;">
-                    <span style="cursor:pointer; margin: 0 5px;">👁️</span>
-                    <span style="cursor:pointer; margin: 0 5px;">🗑️</span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <section class="glass-card form-section">
+            <header class="section-header">
+                <h2>Registrar Item</h2>
+            </header>
+
+            <form th:action="@{/detalles/guardar}" th:object="${detalleObj}" method="post" class="stack-form">
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>ID Detalle</label>
+                        <input type="number" th:field="*{codigoDetalleVenta}" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Venta (Factura)</label>
+                        <select name="ventaId" required>
+                            <option value="">Seleccione...</option>
+                            <option th:each="v : ${ventas}"
+                                    th:value="${v.codigoVenta}"
+                                    th:text="'#' + ${v.codigoVenta}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Producto</label>
+                    <select name="productoId" required>
+                        <option value="">Seleccione un producto...</option>
+                        <option th:each="p : ${productos}"
+                                th:value="${p.codigoProducto}"
+                                th:text="${p.nombre_producto}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Cantidad</label>
+                        <input type="number" th:field="*{cantidad}" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Precio Unitario</label>
+                        <input type="number" step="0.01" th:field="*{precio_unitario}" required>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn-save">Guardar Item</button>
+                    <a th:href="@{/home}" class="btn-cancel">Volver</a>
+                </div>
+            </form>
+        </section>
+
+        <section class="glass-card table-section">
+            <div class="table-header">
+                <h3>Registros de Detalle</h3>
+                <!-- Buscador igual al de clientes -->
+                <form th:action="@{/detalles}" method="get" class="mini-search">
+                    <input type="text" name="buscar"
+                           placeholder="🔍 Filtrar por producto, venta o ID..."
+                           th:value="${buscar}">
+                </form>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Venta</th>
+                        <th>Producto</th>
+                        <th>Cant.</th>
+                        <th>Precio Unit.</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="d : ${detalles}">
+                        <td th:text="${d.codigoDetalleVenta}"></td>
+                        <td th:text="'#' + ${d.venta.codigoVenta}"></td>
+                        <td th:text="${d.producto.nombre_producto}"></td>
+                        <td th:text="${d.cantidad}"></td>
+                        <td th:text="'Q' + ${#numbers.formatDecimal(d.precio_unitario, 1, 2)}"></td>
+                        <td th:text="'Q' + ${#numbers.formatDecimal(d.subtotal, 1, 2)}"></td>
+                        <td>
+                            <a th:href="@{/detalles/eliminar/{id}(id=${d.codigoDetalleVenta})}"
+                               class="btn-icon delete"
+                               onclick="return confirm('¿Eliminar este detalle?')">🗑️</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </div>
 </main>
-
 </body>
 </html>

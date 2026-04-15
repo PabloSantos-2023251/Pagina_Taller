@@ -1,47 +1,75 @@
 package com.PabloSantos.org.controller;
+
 import com.PabloSantos.org.entity.DetalleVenta;
 import com.PabloSantos.org.service.DetalleVentaService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.PabloSantos.org.service.ProductoService;
+import com.PabloSantos.org.service.VentaService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/detalles")
+@Controller
+@RequestMapping("/detalles")
 public class DetalleVentaController {
+
     private final DetalleVentaService detalleVentaService;
-    public DetalleVentaController(DetalleVentaService service) { this.detalleVentaService = service; }
+    private final ProductoService productoService;
+    private final VentaService ventaService;
+
+    public DetalleVentaController(DetalleVentaService service, ProductoService pService, VentaService vService) {
+        this.detalleVentaService = service;
+        this.productoService = pService;
+        this.ventaService = vService;
+    }
 
     @GetMapping
-    public List<DetalleVenta> getAllDetalleVentas() {
-        return detalleVentaService.getAllDetalleVentas();
+    public String listar(@RequestParam(required = false) String buscar, Model model) {
+        List<DetalleVenta> detalles = detalleVentaService.getAllDetalleVentas();
+
+        if (buscar != null && !buscar.isEmpty()) {
+            detalles = detalles.stream()
+                    .filter(d ->
+                            // Busca por nombre de producto
+                            d.getProducto().getNombre_producto().toLowerCase().contains(buscar.toLowerCase()) ||
+                                    // Busca por número de venta
+                                    d.getVenta().getCodigoVenta().toString().contains(buscar) ||
+                                    // Busca por ID de detalle
+                                    d.getCodigoDetalleVenta().toString().contains(buscar)
+                    )
+                    .collect(Collectors.toList());
+        }
+
+        model.addAttribute("detalles", detalles);
+        model.addAttribute("detalleObj", new DetalleVenta());
+        model.addAttribute("productos", productoService.getAllProductos());
+        model.addAttribute("ventas", ventaService.getAllVentas());
+        model.addAttribute("buscar", buscar); // Para mantener el texto en el input
+        return "Detalles";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getDetalleVentaById(@PathVariable Integer id) {
-        try {
-            return ResponseEntity.ok(detalleVentaService.getDetalleVentaById(id));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute DetalleVenta detalleVenta,
+                          @RequestParam("ventaId") Integer ventaId,
+                          @RequestParam("productoId") Integer productoId) {
+
+        detalleVenta.setVenta(ventaService.getVentaById(ventaId));
+        detalleVenta.setProducto(productoService.getProductoById(productoId));
+
+        if (detalleVenta.getCantidad() != null && detalleVenta.getPrecio_unitario() != null) {
+            BigDecimal cantidad = new BigDecimal(detalleVenta.getCantidad());
+            detalleVenta.setSubtotal(detalleVenta.getPrecio_unitario().multiply(cantidad));
         }
+
+        detalleVentaService.saveDetalleVenta(detalleVenta);
+        return "redirect:/detalles";
     }
 
-    @PostMapping
-    public ResponseEntity<Object> saveDetalleVenta(@RequestBody DetalleVenta detalleVenta) {
-        try {
-            return new ResponseEntity<>(detalleVentaService.saveDetalleVenta(detalleVenta), HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteDetalleVenta(@PathVariable Integer id) {
-        try {
-            detalleVentaService.deleteDetalleVenta(id);
-            return ResponseEntity.ok("Eliminado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id) {
+        detalleVentaService.deleteDetalleVenta(id);
+        return "redirect:/detalles";
     }
 }

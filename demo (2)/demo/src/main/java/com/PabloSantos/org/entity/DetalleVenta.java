@@ -1,19 +1,33 @@
 package com.PabloSantos.org.entity;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "DetalleVenta")
 public class DetalleVenta {
-    @Id @Column(name = "codigo_detalle_venta") private Integer codigoDetalleVenta;
+
+    @Id
+    @Column(name = "codigo_detalle_venta")
+    private Integer codigoDetalleVenta;
+
+    @Column(name = "cantidad")
     private Integer cantidad;
+
+    @Column(name = "precio_unitario")
     private BigDecimal precio_unitario;
+
+    @Column(name = "subtotal")
     private BigDecimal subtotal;
 
-    @ManyToOne @JoinColumn(name = "Productos_codigo_producto") private Producto producto;
-    @ManyToOne @JoinColumn(name = "Ventas_codigo_venta") private Venta venta;
+    @ManyToOne
+    @JoinColumn(name = "Productos_codigo_producto")
+    private Producto producto;
 
-    // Getters y Setters
+    @ManyToOne
+    @JoinColumn(name = "Ventas_codigo_venta")
+    private Venta venta;
+
     public Integer getCodigoDetalleVenta() { return codigoDetalleVenta; }
     public void setCodigoDetalleVenta(Integer codigoDetalleVenta) { this.codigoDetalleVenta = codigoDetalleVenta; }
     public Integer getCantidad() { return cantidad; }

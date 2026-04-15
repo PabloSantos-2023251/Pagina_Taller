@@ -1,13 +1,26 @@
 package com.PabloSantos.org.entity;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
-@Entity @Table(name = "Productos")
+@Entity
+@Table(name = "Productos")
 public class Producto {
-    @Id @Column(name = "codigo_producto") private Integer codigoProducto;
+
+    @Id
+    @Column(name = "codigo_producto")
+    private Integer codigoProducto;
+
+    @Column(name = "nombre_producto")
     private String nombre_producto;
+
+    @Column(name = "precio")
     private BigDecimal precio;
+
+    @Column(name = "stock")
     private Integer stock;
+
+    @Column(name = "estado")
     private Integer estado;
 
     public Integer getCodigoProducto() { return codigoProducto; }
