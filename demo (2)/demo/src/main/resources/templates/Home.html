@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Panel Principal - Sistema</title>
-    <link rel="stylesheet" th:href="@{/css/home.css}" href="../static/css/home.css">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
 
 <header class="navbar">
-    <div class="logo">MiSistema v1.0</div>
+    <div class="logo">TIENDA<span>PRO</span></div>
     <div class="user-info">
-        Bienvenido, <span th:text="${session.usuarioLogueado}">Admin</span>
+        Bienvenido, <b th:text="${session.usuarioLogueado}">Usuario</b>
+        (<span th:text="${session.rol}">Rol</span>)
         <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
     </div>
 </header>
@@ -19,16 +20,16 @@
     <h1>Panel de Control</h1>
     <div class="grid-menu">
 
-        <a th:href="@{/clientes}" class="card">
+        <a th:if="${session.rol == 'Administrador'}" th:href="@{/clientes}" class="card">
             <div class="card-icon">👥</div>
             <h3>Clientes</h3>
             <p>Gestionar base de datos de clientes.</p>
         </a>
 
-        <a th:href="@{/usuarios}" class="card">
-            <div class="card-icon">👥</div>
+        <a th:if="${session.rol == 'Administrador'}" th:href="@{/usuarios}" class="card">
+            <div class="card-icon">🔐</div>
             <h3>Usuarios</h3>
-            <p>Gestionar base de datos de usuarios.</p>
+            <p>Gestionar accesos y roles.</p>
         </a>
 
         <a th:href="@{/detalles}" class="card">
@@ -51,6 +52,5 @@
 
     </div>
 </main>
-
 </body>
 </html>

@@ -62,6 +62,5 @@ public class ClienteController {
     @GetMapping("/home")
     public String irAHome() { return "Home"; }
 
-    @GetMapping("/logout")
-    public String Logout() { return "redirect:/"; }
+
 }

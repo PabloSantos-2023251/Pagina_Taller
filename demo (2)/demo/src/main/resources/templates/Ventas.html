@@ -112,8 +112,17 @@
                             <span th:class="${v.estado == 1 ? 'badge-ok' : 'badge-no'}" th:text="${v.estado == 1 ? 'Activo' : 'Anulado'}"></span>
                         </td>
                         <td class="text-right">
-                            <a th:href="@{/ventas/editar/{id}(id=${v.codigoVenta})}" class="btn-icon">✏️</a>
-                            <a th:href="@{/ventas/eliminar/{id}(id=${v.codigoVenta})}" class="btn-icon" onclick="return confirm('¿Eliminar?')">🗑️</a>
+                            <div th:if="${session.rol == 'Administrador' or (v.usuario != null and v.usuario.codigoUsuario == session.usuarioId)}">
+                                <a th:href="@{/ventas/editar/{id}(id=${v.codigoVenta})}" class="btn-icon">✏️</a>
+
+                                <a th:if="${session.rol == 'Administrador'}"
+                                   th:href="@{/ventas/eliminar/{id}(id=${v.codigoVenta})}"
+                                   class="btn-icon"
+                                   onclick="return confirm('¿Eliminar?')">🗑️</a>
+                            </div>
+                            <span th:unless="${session.rol == 'Administrador' or (v.usuario != null and v.usuario.codigoUsuario == session.usuarioId)}">
+                        Sin permisos
+                        </span>
                         </td>
                     </tr>
                     </tbody>
