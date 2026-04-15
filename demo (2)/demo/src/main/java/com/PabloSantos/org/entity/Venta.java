@@ -1,6 +1,7 @@
 package com.PabloSantos.org.entity;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -12,6 +13,7 @@ public class Venta {
     @Column(name = "codigo_venta")
     private Integer codigoVenta;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "fecha_venta")
     private LocalDate fecha_venta;
 
@@ -29,6 +31,7 @@ public class Venta {
     @JoinColumn(name = "Usuarios_codigo_usuario")
     private Usuario usuario;
 
+    // Getters y Setters
     public Integer getCodigoVenta() { return codigoVenta; }
     public void setCodigoVenta(Integer codigoVenta) { this.codigoVenta = codigoVenta; }
     public LocalDate getFecha_venta() { return fecha_venta; }
