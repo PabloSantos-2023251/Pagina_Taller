@@ -27,31 +27,31 @@
     <div class="grid-menu">
 
         <a th:if="${session.rol == 'Administrador'}" th:href="@{/clientes}" class="card">
-            <div class="card-icon">👥</div>
+            <div class="card-icon">👦</div>
             <h3>Clientes</h3>
             <p>Gestionar base de datos de clientes.</p>
         </a>
 
         <a th:if="${session.rol == 'Administrador'}" th:href="@{/usuarios}" class="card">
-            <div class="card-icon">🔐</div>
+            <div class="card-icon">👨‍👩‍👦</div>
             <h3>Usuarios</h3>
             <p>Gestionar accesos y roles.</p>
         </a>
 
         <a th:href="@{/detalles}" class="card">
-            <div class="card-icon">📋</div>
+            <div class="card-icon">📠</div>
             <h3>Detalles de Venta</h3>
             <p>Ver desglose de transacciones.</p>
         </a>
 
         <a th:href="@{/ventas}" class="card">
-            <div class="card-icon">💰</div>
+            <div class="card-icon">💵</div>
             <h3>Ventas</h3>
             <p>Registro histórico de ventas.</p>
         </a>
 
         <a th:href="@{/productos}" class="card">
-            <div class="card-icon">📦</div>
+            <div class="card-icon">🎁</div>
             <h3>Productos</h3>
             <p>Control de inventario y stock.</p>
         </a>
