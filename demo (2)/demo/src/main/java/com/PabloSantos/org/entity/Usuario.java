@@ -5,18 +5,26 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Usuarios")
 public class Usuario {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo_usuario")
     private Integer codigoUsuario;
 
+    @Column(name = "username")
     private String username;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "rol")
     private String rol;
+
+    @Column(name = "estado")
     private Integer estado;
 
-    // Getters y Setters
     public Integer getCodigoUsuario() { return codigoUsuario; }
     public void setCodigoUsuario(Integer codigoUsuario) { this.codigoUsuario = codigoUsuario; }
     public String getUsername() { return username; }

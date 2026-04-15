@@ -2,62 +2,65 @@ package com.PabloSantos.org.controller;
 
 import com.PabloSantos.org.entity.Usuario;
 import com.PabloSantos.org.service.UsuarioService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@RestController
-@RequestMapping("/api/usuarios")
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Controller
 public class UsuarioController {
+
     private final UsuarioService usuarioService;
 
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
-    public List<Usuario> getAllUsuarios() {
-        return usuarioService.getAllUsuarios();
-    }
+    @GetMapping("/usuarios")
+    public String listar(@RequestParam(required = false) String buscar, Model model) {
+        List<Usuario> usuarios = usuarioService.getAllUsuarios();
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getUsuarioById(@PathVariable Integer id) {
-        try {
-            Usuario usuario = usuarioService.getUsuarioById(id);
-            return ResponseEntity.ok(usuario);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        if (buscar != null && !buscar.isEmpty()) {
+            usuarios = usuarios.stream()
+                    .filter(u ->
+                            u.getUsername().toLowerCase().contains(buscar.toLowerCase()) ||
+                                    u.getEmail().toLowerCase().contains(buscar.toLowerCase()) ||
+                                    u.getRol().toLowerCase().contains(buscar.toLowerCase()) ||
+                                    u.getCodigoUsuario().toString().contains(buscar)
+                    )
+                    .collect(Collectors.toList());
         }
+
+        model.addAttribute("usuarios", usuarios);
+        model.addAttribute("usuarioObj", new Usuario());
+        model.addAttribute("buscar", buscar);
+        return "Usuario";
     }
 
-    @PostMapping
-    public ResponseEntity<Object> createUsuario(@RequestBody Usuario usuario) {
-        try {
-            Usuario created = usuarioService.saveUsuario(usuario);
-            return new ResponseEntity<>(created, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al crear: " + e.getMessage());
-        }
+    @PostMapping("/usuarios/guardar")
+    public String guardar(@ModelAttribute Usuario usuario) {
+        usuarioService.saveUsuario(usuario);
+        return "redirect:/usuarios";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateUsuario(@PathVariable Integer id, @RequestBody Usuario usuario) {
-        try {
-            usuarioService.updateUsuario(id, usuario);
-            return ResponseEntity.ok("Usuario actualizado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    @GetMapping("/usuarios/editar/{id}")
+    public String precargarEdicion(@PathVariable Integer id, Model model) {
+        model.addAttribute("usuarios", usuarioService.getAllUsuarios());
+        model.addAttribute("usuarioObj", usuarioService.getUsuarioById(id));
+        model.addAttribute("editando", true);
+        return "Usuario";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUsuario(@PathVariable Integer id) {
+    @GetMapping("/usuarios/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id, RedirectAttributes redirectAttrs) {
         try {
             usuarioService.deleteUsuario(id);
-            return ResponseEntity.ok("Usuario eliminado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("mensajeError", "No se puede eliminar: El usuario tiene registros asociados.");
         }
+        return "redirect:/usuarios";
     }
 }
